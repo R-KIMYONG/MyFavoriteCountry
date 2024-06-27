@@ -1,7 +1,7 @@
 export interface Props {
-  countries: newCountryType[];
+  countries: Newcountrytype[];
   isLike: boolean;
-  setCountries: (cb: (prev: newCountryType[]) => newCountryType[]) => void;
+  setCountries: (cb: (prev: Newcountrytype[]) => Newcountrytype[]) => void;
 }
 
 export type Country = {
@@ -34,7 +34,7 @@ export type Country = {
   languages: { [keys: string]: string };
   maps: { [keys: string]: string };
   name: {
-    [key: string]: string | { [key: string]: { [key: string]: string } };
+    [keys: string]: string | { [keys: string]: string };
   };
   postalCode: { [keys: string]: string };
   timezones: [string];
@@ -45,7 +45,7 @@ export type Country = {
   unMember: boolean;
 };
 
-export type newCountryType = Country & {
+export type Newcountrytype = Country & {
   like: boolean;
   id: string;
 };

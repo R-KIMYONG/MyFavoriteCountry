@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Country, newCountryType } from "../types/country.type";
+import { Country, Newcountrytype } from "../types/country.type";
 import CountryList from "./CountryList";
 import { countryApi } from "../api/countryApi";
 import { nanoid } from "nanoid";
 
 const Countrys: React.FC = () => {
-  const [countries, setCountries] = useState<newCountryType[]>([]);
+  const [countries, setCountries] = useState<Newcountrytype[]>([]);
   const [isPending, setIspending] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
 
@@ -14,7 +14,7 @@ const Countrys: React.FC = () => {
       try {
         setIspending(true);
         const { data } = await countryApi.get("/all");
-        const selectData: newCountryType[] = data.map((country: Country) => ({
+        const selectData: Newcountrytype[] = data.map((country: Country) => ({
           id: nanoid(),
           name: country.name.common,
           capital: country.capital,

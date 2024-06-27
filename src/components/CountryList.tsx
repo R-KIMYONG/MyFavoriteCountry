@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { Props, newCountryType } from "../types/country.type";
+import { Props, Newcountrytype } from "../types/country.type";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../service/supabase";
 const ITEMS_TOTAL_LENGTH: number = 250;
 const CountryList = ({ countries, isLike, setCountries }: Props) => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
   >("ascending");
   const [seeMore, setSeeMore] = useState<number>(25);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [searchCountry, setSearchCountry] = useState<newCountryType[]>([]);
+  const [searchCountry, setSearchCountry] = useState<Newcountrytype[]>([]);
 
   const handleSearchCountry = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -31,18 +32,40 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
       sortCountryList === "ascending" ? "descending" : "ascending";
     setSortCountryList(newSortOrder);
   };
-  const handleToggleLike = (country: newCountryType): void => {
+
+  const handleToggleLike = async (country: Newcountrytype): Promise<void> => {
     setCountries((prevData) =>
       prevData.map((item) =>
         item.id === country.id ? { ...item, like: !item.like } : item
       )
     );
+    // const newCountry = {
+    //   country_Id: country.id,
+    //   name: country.name,
+    //   capital: country.capital,
+    //   translations: country.translations,
+    //   flags: country.flags,
+    //   like: !country.like,
+    // };
+
+    // try {
+    //   const { data, error } = await supabase
+    //     .from("mycountries")
+    //     .insert(newCountry);
+    //   if (error) {
+    //     console.error("supabase error", error);
+    //   } else {
+    //     console.log("추가 성공:", data);
+    //   }
+    // } catch (error) {
+    //   console.error("추가 실패:", error);
+    // }
   };
   const totalFalseLikes = countries
     .slice(0, seeMore)
-    .filter((country: newCountryType) => country.like === false).length;
+    .filter((country: Newcountrytype) => country.like === false).length;
   const totalTrueLikes = countries.filter(
-    (country: newCountryType) => country.like === true
+    (country: Newcountrytype) => country.like === true
   ).length;
   return (
     <>
@@ -108,9 +131,9 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {(searchCountry.length > 0 ? searchCountry : countries)
-          .filter((country: newCountryType) => country.like === isLike)
+          .filter((country: Newcountrytype) => country.like === isLike)
           .slice(0, seeMore)
-          .sort((a: newCountryType, b: newCountryType) => {
+          .sort((a: Newcountrytype, b: Newcountrytype) => {
             const countryA = a.translations.kor.official;
             const countryB = b.translations.kor.official;
             if (sortCountryList === "ascending") {
@@ -119,7 +142,7 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
               return countryB.localeCompare(countryA);
             }
           })
-          .map((country: newCountryType) => (
+          .map((country: Newcountrytype) => (
             <li
               key={country.id}
               onClick={() => handleToggleLike(country)}

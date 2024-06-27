@@ -7,7 +7,6 @@ type Params = { id: string };
 const CountryDetail: React.FC = () => {
   const { id } = useParams<Params>();
   const [countryDetail, setCountryDetail] = useState<Country[]>([]);
-  console.log(id);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +16,7 @@ const CountryDetail: React.FC = () => {
           `/name/${id}?fullText=true`
         );
         if (data.length > 0) {
-          setCountryDetail(data); // 데이터가 있을 때만 첫 번째 요소 설정
+          setCountryDetail(data);
         }
       } catch (error) {
         console.error("Error fetching country detail:", error);
