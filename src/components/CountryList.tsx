@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Props, Newcountrytype } from "../types/country.type";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../service/supabase";
 const ITEMS_TOTAL_LENGTH: number = 250;
 const CountryList = ({ countries, isLike, setCountries }: Props) => {
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
   const [seeMore, setSeeMore] = useState<number>(25);
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchCountry, setSearchCountry] = useState<Newcountrytype[]>([]);
-
   const handleSearchCountry = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const searchValue: string | undefined = searchRef.current?.value?.trim();
@@ -33,7 +31,7 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
     setSortCountryList(newSortOrder);
   };
 
-  const handleToggleLike = async (country: Newcountrytype): Promise<void> => {
+  const handleToggleLike = (country: Newcountrytype): void => {
     setCountries((prevData) =>
       prevData.map((item) =>
         item.id === country.id ? { ...item, like: !item.like } : item
@@ -61,10 +59,10 @@ const CountryList = ({ countries, isLike, setCountries }: Props) => {
     //   console.error("추가 실패:", error);
     // }
   };
-  const totalFalseLikes = countries
+  const totalFalseLikes: number = countries
     .slice(0, seeMore)
     .filter((country: Newcountrytype) => country.like === false).length;
-  const totalTrueLikes = countries.filter(
+  const totalTrueLikes: number = countries.filter(
     (country: Newcountrytype) => country.like === true
   ).length;
   return (

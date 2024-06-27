@@ -1,34 +1,31 @@
 import { useEffect, useState } from "react";
-import { Country, Newcountrytype } from "../types/country.type";
+import { Newcountrytype } from "../types/country.type";
 import CountryList from "./CountryList";
 import { countryApi } from "../api/countryApi";
 import { nanoid } from "nanoid";
+import { AxiosError } from "axios";
 
 const Countrys: React.FC = () => {
   const [countries, setCountries] = useState<Newcountrytype[]>([]);
   const [isPending, setIspending] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [isError, setIsError] = useState<null | AxiosError>(null);
 
   useEffect(() => {
     const fetchCountryData = async (): Promise<void> => {
       try {
         setIspending(true);
-        const { data } = await countryApi.get("/all");
-        const selectData: Newcountrytype[] = data.map((country: Country) => ({
+        const { data } = await countryApi.get<Newcountrytype[]>("/all");
+        const selectData = data.map((item) => ({
+          ...item,
           id: nanoid(),
-          name: country.name.common,
-          capital: country.capital,
-          translations: {
-            kor: { official: country.translations.kor.official },
-            est: { official: country.translations.est.official },
-          },
-          flags: { png: country.flags.png },
           like: false,
         }));
 
         setCountries(selectData);
       } catch (error) {
-        setIsError(true);
+        if (error instanceof AxiosError) {
+          setIsError(error);
+        }
       } finally {
         setIspending(false);
       }
